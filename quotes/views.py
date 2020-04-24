@@ -7,10 +7,11 @@ from .forms import StockForm
 def home(request):
     import requests
     import json
+    import os
 
     if request.method == 'POST':
         ticker = request.POST['ticker']
-        api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_13a1ac749da94ac9ac095c4bbca20953")
+        api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=" + os.environ.get('QUOTES_KEY'))
 
         try:
             api = json.loads(api_request.content)
@@ -32,6 +33,7 @@ def delete_stock(request):
 def add_stock(request):
     import requests
     import json
+    import os
 
     if request.method == 'POST':
         form = StockForm(request.POST or None)
@@ -44,7 +46,7 @@ def add_stock(request):
         ticker = Stock.objects.all()
         output = []
         for ticker_item in ticker:
-            api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + str(ticker_item) + "/quote?token=pk_13a1ac749da94ac9ac095c4bbca20953")
+            api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + str(ticker_item) + "/quote?token=" + os.environ.get('QUOTES_KEY'))
             try:
                 api = json.loads(api_request.content)
                 output.append(api)
